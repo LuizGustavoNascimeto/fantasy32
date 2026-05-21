@@ -1,13 +1,24 @@
 services:
-  ok-api:
-    image: ok-api
+  app:
     build:
       context: .
       dockerfile: Dockerfile
-    ports:
-      - "8080:8080"
     develop:
       watch:
+        - action: sync+restart   # sincroniza o app principal e reinicia o CMD
+          path: ./main.cpp
+          target: /app/main.cpp
+
+        - action: sync+restart   # código e headers da VM
+          path: ./vm
+          target: /app/vm
+    
+        - action: sync+restart   # pasta de jogo mantida no layout real
+          path: ./game
+          target: /app/game
+
+        - action: rebuild        # mudança nas regras de build exige nova imagem
+          path: Makefile
+
         - action: rebuild
-          path: .
-          extensions: [c, h]
+          path: Dockerfile

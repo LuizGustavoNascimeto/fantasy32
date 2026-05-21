@@ -35,6 +35,7 @@ enum Opcode {
   BGT = 0x14,
   BLE = 0x15,
   BGE = 0x16,
+  teste = 55,
   JMP = 0x17,
   CALL = 0x18,
   PUSH = 0x19,
