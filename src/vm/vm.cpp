@@ -40,11 +40,56 @@ void VM::runInstr() {
 
   uint32_t i_rs = (instr >> 22) & 0xF;
   uint32_t i_rt = (instr >> 18) & 0xF;
+  uint32_t i_rd = (instr >> 14) & 0xF;
   uint32_t i_imm = instr & 0x3FFFF;
 
   this->regs[PC] += 4;
 
   switch (opcode) {
+  // Arithmetic and logical instructions (type R, except for ADDI)
+  case ADD:
+    this->regs[i_rd] = this->regs[i_rs] + this->regs[i_rt];
+    break;
+  case SUB:
+    this->regs[i_rd] = this->regs[i_rs] - this->regs[i_rt];
+    break;
+  case MUL:
+    this->regs[i_rd] = this->regs[i_rs] * this->regs[i_rt];
+    break;
+  case DIV:
+    this->regs[i_rd] = this->regs[i_rs] / this->regs[i_rt];
+    break;
+  case MOD:
+    this->regs[i_rd] = this->regs[i_rs] % this->regs[i_rt];
+    break;
+  case AND:
+    this->regs[i_rd] = this->regs[i_rs] & this->regs[i_rt];
+    break;
+  case OR:
+    this->regs[i_rd] = this->regs[i_rs] | this->regs[i_rt];
+    break;
+  case XOR:
+    this->regs[i_rd] = this->regs[i_rs] ^ this->regs[i_rt];
+    break;
+  case SHL:
+    this->regs[i_rd] = this->regs[i_rs] << (this->regs[i_rt] & 0x1F);
+    break;
+  case SHR:
+    this->regs[i_rd] = this->regs[i_rs] >> (this->regs[i_rt] & 0x1F);
+    break;
+  case ROL:
+    this->regs[i_rd] = (this->regs[i_rs] << (this->regs[i_rt] & 0x1F)) |
+                       (this->regs[i_rs] >> (32 - (this->regs[i_rt] & 0x1F)));
+    break;
+  case ROR:
+    this->regs[i_rd] = (this->regs[i_rs] >> (this->regs[i_rt] & 0x1F)) |
+                       (this->regs[i_rs] << (32 - (this->regs[i_rt] & 0x1F)));
+    break;
+  case ADDI: // Type I
+    this->regs[i_rt] = this->regs[i_rs] + (i_imm & 0xFFFF);
+    break;
+
+  // Memory movement instructions (type I)
   case MOVL:
     this->regs[i_rt] = (i_imm & 0xFFFF);
     break;
