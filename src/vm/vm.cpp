@@ -113,38 +113,38 @@ void VM::runInstr() {
       break;
 
     case BEQ:
-      if (regs[i_rs] == regs[i_rt]) {
-        regs[PC] += (offset * 4);
+      if (this->regs[i_rs] == regs[i_rt]) {
+        this->regs[PC] += (offset * 4);
       }
       break;
 
     case BNE:
-      if (regs[i_rs] != regs[i_rt]) {
-        regs[PC] += ((i_imm & 0xFFFF) * 4)
+      if (this->regs[i_rs] != this->regs[i_rt]) {
+        this->regs[PC] += (offset * 4);
       }
       break;
 
     case BLT:
-      if (regs[i_rs] < regs[i_rt]) {
-        regs[PC] += (offset * 4);
+      if (this->regs[i_rs] < this->regs[i_rt]) {
+        this->regs[PC] += (offset * 4);
       }
       break;
 
     case BGT:
-      if (regs[i_rs] > regs[i_rt]) {
-        regs[PC] += ((i_imm & 0xFFFF) * 4)
+      if (this->regs[i_rs] > this->regs[i_rt]) {
+        this->regs[PC] += (offset * 4);
       }
       break;
 
     case BLE:
-      if (regs[i_rs] <= regs[i_rt]) {
-        regs[PC] += (offset * 4);
+      if (this->regs[i_rs] <= this->regs[i_rt]) {
+        this->regs[PC] += (offset * 4);
       }
       break;
 
     case BGE:
-      if (regs[i_rs] >= regs[i_rt]) {
-        regs[PC] += (offset * 4);
+      if (this->regs[i_rs] >= this->regs[i_rt]) {
+        this->regs[PC] += (offset * 4);
       }
       break;
       
