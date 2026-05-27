@@ -17,6 +17,7 @@ private:
   int32_t regs[16];
   uint8_t *mem;
   uint32_t readMem(uint32_t addr);
+  bool writeMem(uint32_t addr, uint32_t value);
 
 public:
   VM();

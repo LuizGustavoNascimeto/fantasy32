@@ -18,6 +18,17 @@ uint32_t VM::readMem(uint32_t addr) {
          (this->mem[addr + 2] << 8) | this->mem[addr + 3];
 }
 
+bool VM::writeMem(uint32_t addr, uint32_t value) {
+  if (addr >= S_MEM) {
+    return false;
+  }
+  this->mem[addr] = (value >> 24) & 0xFF;
+  this->mem[addr + 1] = (value >> 16) & 0xFF;
+  this->mem[addr + 2] = (value >> 8) & 0xFF;
+  this->mem[addr + 3] = value & 0xFF;
+  return true;
+}
+
 void VM::load(char *arqBin) {
   FILE *bin = fopen(arqBin, "rb");
   fseek(bin, 0, SEEK_END);
