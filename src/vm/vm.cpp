@@ -55,6 +55,7 @@ void VM::runInstr() {
   uint32_t i_imm = instr & 0x3FFFF;
   int32_t offset = (int16_t)(i_imm & 0xFFFF); // Used for branch instructions, allowing negative values
   uint32_t target_addr26 = (instr & 0x03FFFFFF) << 2;
+  uint32_t u_rd = (instr >> 22) & 0xF;
 
   this->regs[PC] += 4;
 
@@ -124,6 +125,7 @@ void VM::runInstr() {
       }
       break;
 
+    // BRANCH INSTRUCTIONS (type I)
     case BEQ:
       if (this->regs[i_rs] == regs[i_rt]) {
         this->regs[PC] += (offset * 4);
@@ -160,6 +162,7 @@ void VM::runInstr() {
       }
       break;
 
+    // JUMP INSTRUCTIONS (type J)
     case JMP:
       if (!isInsideMem(target_addr26)) {
         printf("Invalid jump address: 0x%X\n", target_addr26);
@@ -182,6 +185,41 @@ void VM::runInstr() {
       this->regs[PC] = target_addr26;
       break;
 
+    // UNARY AND STACK INSTRUCTIONS (type U)
+    case PUSH:
+      if (this->regs[SP] <= 0x0FFEFFF) {
+        printf("Stack Overflow\n");
+        exit(1);
+      }
+      this->regs[SP] -= 4;
+      writeMem(this->regs[SP], this->regs[u_rd]);
+      break;
+
+    case POP:
+      if (this->regs[SP] >= 0x00FFFFFF) {
+        printf("Stack Underflow\n");
+        exit(1);
+      }
+      this->regs[u_rd] = readMem(this->regs[SP]);
+      this->regs[SP] += 4;
+      break;
+    case INC:
+      this->regs[u_rd]++;
+      break;
+    case DEC:
+      this->regs[u_rd]--;
+      break;
+    case NOT:
+      this->regs[u_rd] = ~this->regs[u_rd];
+      break;
+    case RET:
+      if (this->regs[SP] >= 0x00FFFFFF) {
+        printf("Stack Underflow\n");
+        exit(1);
+      }
+      this->regs[PC] = readMem(this->regs[SP]);
+      this->regs[SP] += 4;
+      break;
     default:
       printf("Unknown opcode: 0x%X\n", opcode);
       exit(1);
